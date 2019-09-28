@@ -24,22 +24,17 @@ class PdfEcadImporter
         self.process_line(line)
       end
     end
-    self.save_pending_work
   end
   
   def process_line(line)
       if line.length >= 27 and self.class.valid_iswc?(line[13..27])      
-        self.save_pending_work
         @current_work = self.class.work(line)
         @current_work[:right_holders] = []
+        @works << @current_work
       elsif @current_work != nil
         holder = self.class.right_holder(line)
         @current_work[:right_holders] << holder if holder != nil
       end
-  end
-  
-  def save_pending_work
-    @works << @current_work if @current_work != nil
   end
   
   def self.right_holder(line)
